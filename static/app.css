@@ -1,0 +1,110 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    padding: 40px;
+    max-width: 500px;
+}
+
+.content {
+    margin: auto;
+    padding: 60px 40px 100px 40px;
+    max-width: 1250px;
+}
+
+.navbar {
+    background-color: black;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+
+/* flash messages  */
+.messages p {
+    padding: 1rem;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+}
+.messages .success {
+    background-color: rgba(0, 255, 0, 0.1)
+}
+.messages .error {
+    background-color: rgba(255, 0, 0, 0.1)
+}
+
+/* https://www.w3schools.com/css/css_grid_container.asp */
+
+.user-stat-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.user-stat-item {
+    display: flex;
+    align-self: stretch;
+    justify-self: start;
+    justify-content: stretch;
+}
+
+.activity-stat-grid {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.activity-stat-item {
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.activity-card-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+}
+
+.activity-card-item {
+    display: flex;
+    align-self: stretch;
+    justify-self: start;
+    justify-content: stretch;
+}
+
+
+.secondary-nav {
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    background-color: black;
+}
+
+.secondary-nav-cell {
+    color: #ddd;
+    display: flex;
+    justify-content: center;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

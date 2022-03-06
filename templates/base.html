@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/app.css">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+    <nav class = "navbar">
+        <a href="/addactivity">Add Activity</a>
+        <a href="/">View History</a>
+        <a href="/">About</a>
+        <a href="/">Logout</a>
+    </nav>
+
+    <main class="content">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <section class="messages">
+                {% for category,msg in messages %}
+                    <p class="{{category}}">{{msg}}</p>
+                {% endfor %}
+            </section>
+        {% endif %}
+        {% endwith %}
+
+
+        {% block content %} {% endblock %}
+
+    </main>
+
+    <footer>
+        
+    </footer>
+
+<script src="https://unpkg.com/jquery"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<script src="/static/app.js"></script>
+<script src="/static/http_requests.js"></script>
+
+</body>
+</html>

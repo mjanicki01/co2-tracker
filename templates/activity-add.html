@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Add Activity{% endblock %}
+{% block content %}
+
+<h1>Add Activity</h1>
+<div class="secondary-nav">
+    <div class="secondary-nav-cell">
+        <button type="button" id="clth">Clothing Purchase</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" id="air">Air Travel</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" id="road">Road Travel - Car</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" id="btl">Plastic Bottle</button>
+    </div>
+</div>
+
+<div class="form-container">
+
+<form method="POST" id="form-clth">
+    <h3>New Clothing by USD Spent</h3>
+
+    {{ form_money.hidden_tag() }}
+
+    {% for field in form_money
+        if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
+
+    <p>
+        {{ field.label }}
+        {{ field }}
+    </p>
+
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
+
+
+<form method="POST" action="/postactivity" id="form-distance">
+    <h3>Road Travel by Miles</h3>
+
+    {{ form_distance.hidden_tag() }}
+
+    {% for field in form_distance
+        if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
+
+    <p>
+        {{ field.label }}
+        {{ field }}
+    </p>
+
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
+
+
+<form method="POST" action="/postactivity" id="form-airtravel">
+    <h3>Air Travel by Distance</h3>
+
+    {{ form_air_travel.hidden_tag() }}
+
+    {% for field in form_air_travel
+        if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
+
+    <p>
+        {{ field.label }}
+        {{ field }}
+    </p>
+
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
+
+<div class="form-container">
+    <form method="POST" action="/postactivity" id="form-btl">
+        <h3>Plastic Bottles by USD Spent</h3>
+    
+        {{ form_money.hidden_tag() }}
+    
+        {% for field in form_money
+            if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
+    
+        <p>
+            {{ field.label }}
+            {{ field }}
+        </p>
+    
+        {% endfor %}
+    
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+
+{% endblock %}
