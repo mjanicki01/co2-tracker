@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}View Activity History{% endblock %}
+{% block content %}
+{% from 'macros.html' import data_rows %}
+
+{%if events %}
+    <table>
+        <thead>
+            <td>Type</td>
+            <td>Qty<td>
+            <td>Date</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </thead>
+        <tbody>
+            {{ data_rows(events) }}
+        </tbody>
+    </table>
+
+    {% else %}
+    <h3>No recorded activities yet</h3>
+{% endif %}
+
+{% endblock %}

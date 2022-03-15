@@ -1,0 +1,12 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <section class="messages">
+        {% for category,msg in messages %}
+            <p class="{{category}}">{{msg}}</p>
+        {% endfor %}
+    </section>
+{% endif %}
+{% endwith %}
+
+<a href="/signup">Click here to register</a>
+<a href="/login">Click here to login</a>

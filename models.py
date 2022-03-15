@@ -21,7 +21,7 @@ class Activity(db.Model):
     emission_factor_id = db.Column(db.String, nullable=False, unique=True)
     spend_unit = db.Column(db.String(6), nullable=False) #rename to params?
     co2e = db.Column(db.Float, nullable=False)
-    activities = db.relationship('UserActivity', backref='activity', viewonly=True)
+    # activities = db.relationship('UserActivity', backref='activity', viewonly=True)
 
 
 class User(db.Model):
@@ -36,9 +36,11 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False) #revise
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
+    #image_url = db.Column(db.Text, default="/static/images/default-pic.png")
     #location
     #modeoftransport
     events = db.relationship('Event', secondary='user_activity', backref='users', viewonly=True)
+
 
     @classmethod
     def register(cls, username, password, first_name, last_name, email):
@@ -86,16 +88,17 @@ class UserActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer,
                     db.ForeignKey('users.id', ondelete='cascade'))
+    activity_id = db.Column(db.String(8),
+                    db.ForeignKey('activity.id', ondelete='cascade'))
     emission_factor_id = db.Column(db.String,
                     db.ForeignKey('activity.emission_factor_id', ondelete='cascade'))
     date = db.Column(db.Date, nullable=False)
-    leg_1 = db.Column(db.String(4), nullable=True)
-    leg_2 = db.Column(db.String(4), nullable=True)
+    IATA_from = db.Column(db.String(4), nullable=True)
+    IATA_to = db.Column(db.String(4), nullable=True)
     spend_qty = db.Column(db.Float)
     spend_unit = db.Column(db.String(6), nullable=False)
     co2e = db.Column(db.Float, nullable=False)
     users = db.relationship('User', backref='user_activity', viewonly=True)
-    activity_data = db.relationship('Activity', backref='user_activity', viewonly=True)
 
 
 # todo: add comments object:

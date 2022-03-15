@@ -1,0 +1,25 @@
+{% macro data_rows(data) %}
+{% for row in data %}
+<tr class="">
+  <td class="{{row.activity_id}}">{{row.activity_id}}</td> 
+  <td>
+    {% if row.spend_unit == "mi" %}{{row.spend_qty|round}} mi
+    {% elif row.spend_unit == "usd" %}{{"$%.2f"|format(row.spend_qty)}}
+    {% else %}{{row.spend_qty}}
+    {% endif %}
+  </td>
+  <td>{{row.date}}</td>
+  <td>
+    <form method="POST" action="/edit-activity/{{ row.id }}">
+      <button type="submit">Edit</button>
+    </form>
+  </td>
+  <td>
+    <form method="POST" action="/delete-activity/{{ row.id }}">
+      <button type="submit">Delete</button>
+    </form>
+  </td>
+
+</tr>
+{% endfor %}
+{% endmacro %}

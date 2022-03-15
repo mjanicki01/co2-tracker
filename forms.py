@@ -1,17 +1,30 @@
 from email.policy import default
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField, PasswordField, DateField, TextAreaField, SelectField, IntegerField
-from wtforms.validators import InputRequired, Optional, Email, Length, NumberRange, DataRequired
-
+from wtforms.validators import InputRequired, Optional, Email, Length, NumberRange, DataRequired, ValidationError
+from models import User
 
 """User Forms"""
+
+def validate_credentials(form, field):
+
+    username = form.username.data
+    password = field.data
+
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        raise ValidationError('Username does not exist')
+    elif User.authenticate == False:
+        raise ValidationError('Password is incorrect')
+
 
 class LoginForm(FlaskForm):
 
     username = StringField('Username',
-        validators=[InputRequired(), Length(min=5, max=20)])
+        validators=[InputRequired(message="Username required"), Length(min=5, max=20)])
     password = PasswordField('Password',
-        validators=[InputRequired(), Length(min=6, max=55)])
+        validators=[InputRequired(message="Password required"), Length(min=6, max=55), validate_credentials])
+
 
 
 class RegisterForm(FlaskForm):
@@ -27,6 +40,12 @@ class RegisterForm(FlaskForm):
     last_name = StringField('Last Name',
         validators=[InputRequired(), Length(max=20)])
 
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already in use')
+
+
+
 
 class EditProfileForm(FlaskForm):
 
@@ -40,7 +59,7 @@ class EditProfileForm(FlaskForm):
         validators=[InputRequired(), Length(max=20)])
     last_name = StringField('Last Name',
         validators=[InputRequired(), Length(max=20)])
-    #image_url = StringField('Image URL')
+    image_url = StringField('(Optional) Image URL')
     #location = ...
     #primary mode of transport = SelectField('...',
         #choices=[('Walking' - 100%, 'Cat'),  ('Cycling' - 100%, 'Dog'),  ('Car (gas)' - 0%, 'Porcupine'),
