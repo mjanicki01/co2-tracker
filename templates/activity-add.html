@@ -20,14 +20,13 @@
 
 <div class="form-container">
 
-<form method="POST" id="clothing">
+<form method="POST" id="clothing" action="/post-activity-clothing">
     <h3>New Clothing by USD Spent</h3>
 
     {{ form_money.hidden_tag() }}
 
     {% for field in form_money
         if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
-
     <p>
         {{ field.label }}
         {{ field }}

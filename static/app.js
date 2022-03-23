@@ -1,14 +1,5 @@
 
 
-function getData() {
-// get & serialize data from BASE_URL to JSON
-}
-
-function createTable() {
-// create & populate table on window load
-// include loading symbol
-}
-
 function filterTable() {
 // allow user to filter based on click events (buttons)
 // HTML will have nav bar with filter buttons: All, Clth, Flights, Driving, Bottles

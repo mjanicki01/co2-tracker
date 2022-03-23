@@ -4,24 +4,22 @@ from forms import AddMoneyEventForm, AddAirTravelEventForm, AddDistanceEventForm
 from models import db, connect_db, User, Activity, UserActivity, Event
 from sqlalchemy.exc import IntegrityError
 from flask_cors import CORS
-
+import requests
+import json
+import os
 
 app = Flask(__name__)
-CORS(app)
-
-
-app.config["SECRET_KEY"] = "secretkey"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///co2budget"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config.from_pyfile('config.py')
+# app.config.from_object('config.DevConfig')
 debug = DebugToolbarExtension(app)
-
-
+CORS(app)
 connect_db(app)
 
 db.create_all()
 db.session.commit()
+
+
+
 
 
 ##################################################################################################
@@ -29,6 +27,20 @@ db.session.commit()
 
 
 CURR_USER_KEY = "curr_user"
+token = os.environ.get('BEARER')
+HEADERS = { "Authorization": "Bearer " + token }
+
+def format_payload(e_id, param1_label, param1_data, param2_label, param2_data):
+    """Format payload sent to Climatiq from Add Activity Form"""
+    print(e_id, param1_label, param2_label, param1_data, param2_data)
+    return {
+      "emission_factor": e_id,
+        "parameters":
+          {
+          param1_label: param1_data,
+          param2_label: param2_data
+          }
+    }
 
 @app.before_request
 def add_user_to_g():
@@ -131,6 +143,40 @@ def form():
         form_air_travel=form_air_travel)
 
 
+@app.route('/post-activity-clothing', methods=["POST"])
+def add_new_event_clothing():
+
+    form = AddMoneyEventForm()
+
+    if form.validate_on_submit():
+        emission_factor_id = "consumer_goods-type_clothing"
+        param1_label = "money"
+        param1_data = float(form.spend_qty.data)
+        param2_label = "money_unit"
+        param2_data = "usd"
+        payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+        r = requests.post("https://beta3.api.climatiq.io/estimate", data=json.dumps(payload), headers=HEADERS)
+        co2_e = r.json()["co2e"]
+
+        newevent = UserActivity(
+            user_id = session[CURR_USER_KEY],
+            activity_id = "clothing",
+            emission_factor_id = emission_factor_id,
+            date = form.date.data,
+            IATA_from = None,
+            IATA_to = None,
+            spend_qty = param1_data,
+            spend_unit = param2_data,
+            co2e = co2_e
+        )
+
+        db.session.add(newevent)
+        db.session.commit()
+
+    return render_template("index.html", r=r, co2_e=co2_e, payload=payload)
+
+
+
 @app.route('/post-activity', methods=["POST"])
 def add_new_event():
     
@@ -152,11 +198,11 @@ def add_new_event():
     return redirect('/')
 
 
-@app.route('/view-history/<int:user_id>', methods=["GET"]) #remove query
-def list_user_events(user_id):
+@app.route('/view-history', methods=["GET"])
+def list_user_events():
 
-    user = User.query.get_or_404(user_id)
-    events = UserActivity.query.filter(UserActivity.user_id == user_id).all()
+    user = User.query.get_or_404(session[CURR_USER_KEY])
+    events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
 
     return render_template('activity-view.html', user=user, events=events)
     

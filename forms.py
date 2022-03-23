@@ -1,6 +1,7 @@
 from email.policy import default
+import numbers
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, PasswordField, DateField, TextAreaField, SelectField, IntegerField
+from wtforms import StringField, DecimalField, PasswordField, DateField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import InputRequired, Optional, Email, Length, NumberRange, DataRequired, ValidationError
 from models import User
 
@@ -74,9 +75,8 @@ class AddMoneyEventForm(FlaskForm):
     user_id = IntegerField('user_id', default=1)
     date = DateField('Date',
         validators=[DataRequired()])
-    spend_qty = FloatField('Qty',
+    spend_qty = DecimalField('Qty',
         validators=[InputRequired()])
-#include USD & Title of activity type in HTML
 
 
 class AddDistanceEventForm(FlaskForm):
@@ -84,7 +84,7 @@ class AddDistanceEventForm(FlaskForm):
     user_id = IntegerField('user_id', default=1)
     date = DateField('Date',
         validators=[DataRequired()])
-    spend_qty = FloatField('Qty',
+    spend_qty = DecimalField('Qty',
         validators=[InputRequired()])
 
 
