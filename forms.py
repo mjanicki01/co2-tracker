@@ -4,6 +4,7 @@ from wtforms import StringField, DecimalField, PasswordField, DateField, TextAre
 from wtforms.validators import InputRequired, Optional, Email, Length, NumberRange, DataRequired, ValidationError
 from models import User
 
+
 """User Forms"""
 
 def validate_credentials(form, field):
@@ -26,7 +27,6 @@ class LoginForm(FlaskForm):
         validators=[InputRequired(message="Password required"), Length(min=6, max=55), validate_credentials])
 
 
-
 class RegisterForm(FlaskForm):
 
     username = StringField('Username',
@@ -34,9 +34,9 @@ class RegisterForm(FlaskForm):
     email = StringField('Email',
         validators=[DataRequired(), Email(), Length(max=50)])
     first_name = StringField('First Name',
-        validators=[InputRequired(), Length(max=20)])
+        validators=[InputRequired(), Length(max=30)])
     last_name = StringField('Last Name',
-        validators=[InputRequired(), Length(max=20)])
+        validators=[InputRequired(), Length(max=30)])
     password = PasswordField('Password',
         validators=[InputRequired(), Length(min=6, max=55)])
 
@@ -50,25 +50,31 @@ class RegisterForm(FlaskForm):
 
 
 
-
 class EditProfileForm(FlaskForm):
 
     username = StringField('Username',
-        validators=[DataRequired()]) #review datarequired vs input-required - interchangeable?
+        validators=[DataRequired()])
     email = StringField('Email',
         validators=[DataRequired(), Email()])
-    password = PasswordField('Password',
-        validators=[InputRequired(), Length(min=6, max=55)]) #turn off inputrequired?
     first_name = StringField('First Name',
-        validators=[InputRequired(), Length(max=20)])
+        validators=[InputRequired(), Length(max=30)])
     last_name = StringField('Last Name',
-        validators=[InputRequired(), Length(max=20)])
-    image_url = StringField('(Optional) Image URL')
-    #location = ...
-    #primary mode of transport = SelectField('...',
-        #choices=[('Walking' - 100%, 'Cat'),  ('Cycling' - 100%, 'Dog'),  ('Car (gas)' - 0%, 'Porcupine'),
-        # ('Motorcycle' - 25%, 'Porcupine')]), ('Broomstick' - 100%, 'Porcupine')], ('Teleportation' - 100%, 'Porcupine')]
-        # add avatar next to profile image
+        validators=[InputRequired(), Length(max=30)])
+    image_url = StringField('Image URL')
+    location = StringField('Location')
+    mode_of_transport = SelectField('Primary Mode of Transportation',
+        choices=[('Walking', 'Walking'), 
+                ('Bicycle', 'Bicycle'), 
+                ('Car (gas)', 'Car (gas)'),
+                ('Car (hybrid)', 'Car (hybrid)'),
+                ('Car (ev)', 'Car (ev)'),
+                ('Motorcycle', 'Motorcycle'),
+                ('Teleportation', 'Teleportation'),
+                ('Horseback', 'Horseback'),
+                ('Broomstick', 'Broomstick'),
+                ('Palanquin', 'Palanquin')])
+    password = PasswordField('Password',
+        validators=[InputRequired(), Length(min=6, max=55)])
 
 
 """Activity Forms - Add & Edit"""

@@ -6,11 +6,11 @@
 
 <div class="user-stat-grid">
     <div class="user-stat-item1">
-        <img src="static\images\user.png" height=100/>
+        <img src="{{user.image_url}}" height=100/>
         <div><p>{{user.username}}</p>
         <p>{{user.first_name}} {{user.last_name}}</p>
-        <p>Mode of Trasnportation:</p>
-        <p><a href="/">Edit Account</a></p>
+        <p>Mode of Transportation: {{user.mode_of_transport}}</p>
+        <p><a href="/edit-profile">Edit Profile</a></p>
         </div>
 
     </div>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="activity-stat-grid">
-    <div class="activity-stat-item">
+    <div class="activity-stat-item-1">
         <h3>Total CO2e By Activity</h3>
     </div>
     <div class="activity-stat-item">
@@ -39,7 +39,7 @@
     </div>
     <div class="activity-stat-item">
         <img src="static\images\water-bottle.png" height=50/>
-        {{total_co2e_bottles}} kg
+        {{total_co2e_bottles[0]}} kg
     </div>
 </div>
 
@@ -91,9 +91,20 @@
         </div>
     </div>
     <div class="activity-card-item">
-        <h3>New Plastic Bottles Purchased</h3>
-        <p>Description of data collection</p>
-        <p>{{total_co2e_bottles}} kg</p>
+        <div class="activity-card-header"><h3>Plastic Bottles Purchased</h3></div>
+        <div><h4>All time:</h4>
+        <p>{{total_co2e_bottles[0]}} kg co2e</p><p>${{total_co2e_bottles[1]}}</p>
+        </div>
+        <div>
+        <h4>Current Month: </h4>
+        <p>{{total_co2e_bottles[2]}} kg co2e</p>
+        <p>${{total_co2e_bottles[3]}}</p>
+        </div>
+        <div>
+        <h4>Current Year: </h4>
+        <p>{{total_co2e_bottles[4]}} kg co2e</p>
+        <p>${{total_co2e_bottles[5]}}</p>
+        </div>
     </div>
 </div>
 

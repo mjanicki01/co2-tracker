@@ -1,5 +1,5 @@
 from app import app
-from models import User, UserActivity, Event, db
+from models import User, UserActivity, db
 
 
 db.drop_all()
@@ -17,9 +17,4 @@ ua1 = UserActivity(user_id=2, activity_id="Clothing Purchase", emission_factor_i
 
 
 db.session.add_all([ua1])
-db.session.commit()
-
-event1 = Event(user_id=2, user_activity_id=1)
-
-db.session.add_all([event1])
 db.session.commit()

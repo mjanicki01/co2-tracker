@@ -1,3 +1,46 @@
+.content {
+    padding: 20px 20px 40px 20px;
+}
+
+a:visited {
+    color: rgb(47, 59, 47);
+}
+
+.navbar {
+    padding-left: 15px;
+    background-color: black;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: teal;
+    color: white;
+}
+
+/* flash messages  */
+.messages p {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.messages .success {
+    background-color: rgba(0, 255, 0, 0.055);
+    color: rgb(47, 59, 47);
+}
+.messages .error {
+    background-color: rgba(255, 0, 0, 0.055);
+    color: rgb(41, 34, 34);
+}
+
 body {
     font-family: 'Lato', sans-serif;
     padding: 0;
@@ -17,10 +60,6 @@ h2, h3, h5 {
     color: orangered;
 }
 
-a:visited {
-    color: rgb(47, 59, 47);
-}
-
 img {
     padding: 1rem;
 
@@ -28,34 +67,50 @@ img {
 
 table {
     text-align: center;
+    width: 600px;
 }
 
 thead tr:first-child td {
-    padding: 2ex;
-    font-size: 1.5rem;
+    padding: 1ex;
+    font-size: 1rem;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
     color: orangered;
 }
 
-tbody {
-    min-width: 100px;
-}
-
 input {
     font-family: 'Lato', sans-serif;
     margin: 5px 0px 5px 0px;
-    width: 100%;
+    width: 95%;
     padding: 10px;
     border-radius: 4px;
     border: 1px solid grey;
 }
 
+select {
+    font-family: 'Lato', sans-serif;
+    margin: 5px 0px 5px 0px;
+    width: 102%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid grey;
+}
+
+select:focus {
+    font-family: 'Lato', sans-serif;
+    margin: 5px 0px 5px 0px;
+    width: 102%;
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;
+    border: 2px solid grey;
+}
+
 input:focus {
     font-family: 'Lato', sans-serif;
     margin: 5px 0px 5px 0px;
-    width: 100%;
+    width: 95%;
     padding: 10px;
     border-radius: 4px;
     outline: none;
@@ -85,7 +140,6 @@ input[type=submit]:hover, input[type=submit]:active {
     box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px;
 }
 
-
 button {
     padding: 10px;
     margin: 5px 10px 5px 10px;
@@ -110,55 +164,10 @@ button:hover {
     box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px;
 }
 
-
-.content {
-    margin: auto;
-    padding: 40px 40px 100px 40px;
-    max-width: 1000px;
-}
-
-.navbar {
-    padding-left: 15px;
-    background-color: black;
-    overflow: hidden;
-}
-
-.navbar a {
-    float: left;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-}
-
-
-.navbar a:hover {
-    background-color: teal;
-    color: white;
-}
-
-
-/* flash messages  */
-.messages p {
-    padding: 1rem;
-    font-size: 1rem;
-    border-radius: 4px;
-}
-.messages .success {
-    background-color: rgba(0, 255, 0, 0.055);
-    color: rgb(47, 59, 47);
-}
-.messages .error {
-    background-color: rgba(255, 0, 0, 0.055);
-    color: rgb(41, 34, 34);
-}
-
-/* https://www.w3schools.com/css/css_grid_container.asp */
-
 .user-stat-grid {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
 }
 
 .user-stat-item1 {
@@ -173,7 +182,16 @@ button:hover {
 .activity-stat-grid {
     padding: 1rem;
     display: grid;
-    grid-template-columns: auto auto auto auto auto; 
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto auto;
+}
+
+.activity-stat-item-1 {
+    grid-column: span 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .activity-stat-item {
@@ -185,8 +203,8 @@ button:hover {
 
 .activity-card-grid {
     display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto auto;
     gap: 2rem;
 }
 
@@ -206,12 +224,14 @@ button:hover {
 }
 
 .secondary-nav {
-    margin: 3rem;
+    margin: 0;
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
 }
 
 .secondary-nav-cell {
+    margin: 0;
     color: #ddd;
     display: flex;
     justify-content: center;
@@ -219,6 +239,7 @@ button:hover {
 
 .secondary-nav-btn {
     padding: 10px;
+    margin: 5px;
     font-weight: 600;
     font-size: 15px;
     border: 1px solid orangered;
@@ -256,6 +277,5 @@ button:hover {
 }
 
 .login-form {
-    max-width: 400px;
-    width: 100%;
+    width: 95%;
 }

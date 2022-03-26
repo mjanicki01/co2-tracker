@@ -27,16 +27,14 @@ class User(db.Model):
                     nullable=False,
                     unique=True)
     password = db.Column(db.String,
-                    nullable=False) #revise
-    first_name = db.Column(db.String(20),
                     nullable=False)
-    last_name = db.Column(db.String(20),
+    first_name = db.Column(db.String(30),
                     nullable=False)
-    #image_url = db.Column(db.Text, default="/static/images/default-pic.png")
-    #location
-    #modeoftransport
-    events = db.relationship('Event', secondary='user_activity', backref='users', viewonly=True)
-
+    last_name = db.Column(db.String(30),
+                    nullable=False)
+    image_url = db.Column(db.Text, default="/static/images/user.png")
+    location = db.Column(db.String(200))
+    mode_of_transport = db.Column(db.String(200))
 
     @classmethod
     def register(cls, username, password, first_name, last_name, email):
@@ -63,19 +61,6 @@ class User(db.Model):
         else:
             return False
 
-
-class Event(db.Model):
-    """ Join table connecting users & user activity history"""
-
-    __tablename__ = "event"
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
-                    primary_key=True)
-    user_activity_id = db.Column(db.Integer, db.ForeignKey('user_activity.id'),
-                    primary_key=True)
-    events = db.relationship('UserActivity',
-                    backref='event',
-                    viewonly=True)
 
 
 class UserActivity(db.Model):
@@ -190,12 +175,30 @@ class UserActivity(db.Model):
                 round(sum_money_curr_year, 2)]
 
     def sum_all_bottles(user_id):
-        sum = 0
+        sum_co2e = 0
+        sum_money = 0
+        sum_co2e_curr_month = 0
+        sum_money_curr_month = 0
+        sum_co2e_curr_year = 0
+        sum_money_curr_year = 0
         user_total_activities = UserActivity.query.filter_by(user_id=user_id).all()
         for activity in user_total_activities:
-            if "Plastic Bottle Purchase" in activity.activity_id:
-                sum = sum + activity.co2e
-        return round(sum, 2)
+            if "Bottle" in activity.activity_id:
+                sum_co2e = sum_co2e + activity.co2e
+                sum_money = sum_money + activity.spend_qty
+                if str(datetime.now().year) in str(activity.date):
+                    sum_co2e_curr_year = sum_co2e_curr_year + activity.co2e
+                    sum_money_curr_year = sum_money_curr_year + activity.spend_qty
+                    if str(datetime.now().month) in str(activity.date):
+                        sum_co2e_curr_month = sum_co2e_curr_month + activity.co2e
+                        sum_money_curr_month = sum_money_curr_month + activity.spend_qty
+
+        return [round(sum_co2e),
+                round(sum_money, 2),
+                round(sum_co2e_curr_month),
+                round(sum_money_curr_month, 2),
+                round(sum_co2e_curr_year),
+                round(sum_money_curr_year, 2)]
 
 
 

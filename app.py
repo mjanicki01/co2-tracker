@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm
-from models import db, connect_db, User, UserActivity, Event
+from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm, EditProfileForm
+from models import db, connect_db, User, UserActivity
 from sqlalchemy.exc import IntegrityError
 from flask_cors import CORS
 import requests
@@ -73,27 +73,26 @@ def page_not_found(e):
 def homepage():
 
     if g.user:
-        events = Event.query.all()
         user = User.query.filter_by(id = g.user.id).first()
         total_co2e = UserActivity.sum_all(g.user.id)
         total_co2e_flights = UserActivity.sum_all_flights(g.user.id)
         total_co2e_driving = UserActivity.sum_all_drives(g.user.id)
         total_co2e_clothing = UserActivity.sum_all_clothing(g.user.id)
         total_co2e_bottles = UserActivity.sum_all_bottles(g.user.id)
-        return render_template('index.html', events=events,
-                                            user=user,
-                                            total_co2e=total_co2e,
-                                            total_co2e_flights=total_co2e_flights,
-                                            total_co2e_driving=total_co2e_driving,
-                                            total_co2e_clothing=total_co2e_clothing,
-                                            total_co2e_bottles=total_co2e_bottles)
+        return render_template('index.html',
+                                user=user,
+                                total_co2e=total_co2e,
+                                total_co2e_flights=total_co2e_flights,
+                                total_co2e_driving=total_co2e_driving,
+                                total_co2e_clothing=total_co2e_clothing,
+                                total_co2e_bottles=total_co2e_bottles)
 
     else:
         return render_template('index-anon.html')
 
 
 ##################################################################################################
-""" User Sign-up, Sign-in, & Logout"""
+""" User Sign-up, Sign-in, Profile Edit, & Logout"""
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -149,6 +148,35 @@ def logout():
         flash(f"Goodbye!", "success")
 
         return redirect("/")
+
+
+
+@app.route('/edit-profile', methods=["GET", "POST"])
+def edit_user_profile():
+
+    if not g.user:
+        flash("Access unauthorized. Please login.", "error")
+        return redirect("/")
+
+    user = g.user
+    form = EditProfileForm(obj=user)
+
+    if form.validate_on_submit():
+        if User.authenticate(user.username, form.password.data):
+            user.username = form.username.data
+            user.email = form.email.data
+            user.first_name = form.first_name.data
+            user.last_name = form.last_name.data
+            user.image_url = form.image_url.data or "/static/images/user.png"
+            user.location = form.location.data
+            user.mode_of_transport = form.mode_of_transport.data
+
+            db.session.commit()
+            return redirect("/")
+
+        flash("Wrong password. Please try again.", "error")
+
+    return render_template('user-edit.html', form=form)
 
 
 ##################################################################################################
@@ -211,7 +239,7 @@ def add_new_event_bottles():
     form = MoneyEventForm()
 
     if form.validate_on_submit():
-        emission_factor_id = "consumer_goods-type_clothing" #replace
+        emission_factor_id = "consumer_goods-type_soft_drinks_bottled_water_ice"
         param1_label = "money"
         param1_data = float(form.spend_qty.data)
         param2_label = "money_unit"
@@ -327,15 +355,25 @@ def list_user_events():
 def edit_event(event_id):
 
     if not g.user:
-        flash("Access unauthorized. Please login.", "danger")
+        flash("Access unauthorized. Please login.", "error")
         return redirect("/")
 
     event = UserActivity.query.filter(UserActivity.id == event_id).first()
     if event.activity_id == "Clothing Purchase":
         form = MoneyEventForm(obj=event)
         if form.validate_on_submit():
+            emission_factor_id = "consumer_goods-type_clothing"
+            param1_label = "money"
+            param1_data = float(form.spend_qty.data)
+            param2_label = "money_unit"
+            param2_data = "usd"
+            payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+            r = requests.post(base_url + "/estimate", data=json.dumps(payload), headers=HEADERS)
+            co2_e = r.json()["co2e"]
+
             event.date = form.date.data
             event.spend_qty = form.spend_qty.data
+            event.co2e = co2_e
 
             db.session.commit()
             return redirect('/view-history')
@@ -343,17 +381,37 @@ def edit_event(event_id):
     elif event.activity_id == "Driving":
         form = DistanceEventForm(obj=event)
         if form.validate_on_submit():
+            emission_factor_id = "passenger_vehicle-vehicle_type_motorcycle-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
+            param1_label = "distance"
+            param1_data = float(form.spend_qty.data)
+            param2_label = "distance_unit"
+            param2_data = "mi"
+            payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+            r = requests.post(base_url + "/estimate", data=json.dumps(payload), headers=HEADERS)
+            co2_e = r.json()["co2e"]
+
             event.date = form.date.data
             event.spend_qty = form.spend_qty.data
+            event.co2e = co2_e
 
             db.session.commit()
             return redirect('/view-history')
 
-    elif event.activity_id == "Bottle Purchase":
+    elif event.activity_id == "Plastic Bottle Purchase":
         form = MoneyEventForm(obj=event)
         if form.validate_on_submit():
+            emission_factor_id = "consumer_goods-type_soft_drinks_bottled_water_ice"
+            param1_label = "money"
+            param1_data = float(form.spend_qty.data)
+            param2_label = "money_unit"
+            param2_data = "usd"
+            payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+            r = requests.post(base_url + "/estimate", data=json.dumps(payload), headers=HEADERS)
+            co2_e = r.json()["co2e"]
+
             event.date = form.date.data
             event.spend_qty = form.spend_qty.data
+            event.co2e = co2_e
 
             db.session.commit()
             return redirect('/view-history')
