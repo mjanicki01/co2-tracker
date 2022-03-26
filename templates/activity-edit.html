@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Edit Activity{% endblock %}
+{% block content %}
+
+<h1>Edit Activity</h1>
+
+<div class="form-container">
+<form method="POST" class="login-form">
+
+    {{ form.hidden_tag() }}
+
+    {% for field in form
+        if field.widget.input_type != 'hidden' and field.name != 'user_id' %}
+    <p>
+        {{ field.label }}
+        {{ field }}
+    </p>
+
+    {% endfor %}
+
+    <input type="submit" value="Submit">
+</form>
+</div>
+{% endblock %}

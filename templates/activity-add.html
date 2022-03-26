@@ -5,23 +5,24 @@
 <h1>Add Activity</h1>
 <div class="secondary-nav">
     <div class="secondary-nav-cell">
-        <button type="button" id="clth">Clothing Purchase</button>
+        <button type="button" class="secondary-nav-btn" id="clth">Clothing Purchase</button>
     </div>
     <div class="secondary-nav-cell">
-        <button type="button" id="air">Air Travel</button>
+        <button type="button" class="secondary-nav-btn" id="air">Air Travel</button>
     </div>
     <div class="secondary-nav-cell">
-        <button type="button" id="road">Road Travel - Car</button>
+        <button type="button" class="secondary-nav-btn" id="drv">Road Travel - Car</button>
     </div>
     <div class="secondary-nav-cell">
-        <button type="button" id="btl">Plastic Bottle</button>
+        <button type="button" class="secondary-nav-btn" id="btl">Plastic Bottle</button>
     </div>
 </div>
 
 <div class="form-container">
 
-<form method="POST" id="clothing" action="/post-activity-clothing">
-    <h3>New Clothing by USD Spent</h3>
+<form method="POST" class="activity-form" id="form-clth" action="/post-activity-clothing">
+    <h3>New Clothing Purchased</h3>
+    <p>Based on USD Spent. Formula includes manufacturing and shipment, from the factory to your closet.</p>
 
     {{ form_money.hidden_tag() }}
 
@@ -34,12 +35,13 @@
 
     {% endfor %}
 
-    <button type="submit">Submit</button>
+    <input type="submit" value="Submit">
 </form>
 
 
-<form method="POST" action="/post-activity" id="form-distance">
-    <h3>Road Travel by Miles</h3>
+<form method="POST" class="activity-form" id="form-drv" action="/post-activity-driving">
+    <h3>Road Travel</h3>
+    <p>Based on miles driven in 4-door sedan featuring a typical combustion engine</p>
 
     {{ form_distance.hidden_tag() }}
 
@@ -53,11 +55,11 @@
 
     {% endfor %}
 
-    <button type="submit">Submit</button>
+    <input type="submit" value="Submit">
 </form>
 
 
-<form method="POST" action="/post-activity" id="form-airtravel">
+<form method="POST" class="activity-form" id="form-air" action="/post-activity-air-travel">
     <h3>Air Travel by Distance</h3>
 
     {{ form_air_travel.hidden_tag() }}
@@ -72,12 +74,13 @@
 
     {% endfor %}
 
-    <button type="submit">Submit</button>
+    <input type="submit" value="Submit">
 </form>
 
 <div class="form-container">
-    <form method="POST" action="/post-activity" id="form-btl">
-        <h3>Plastic Bottles by USD Spent</h3>
+    <form method="POST" class="activity-form" id="form-btl" action="/post-activity-bottles">
+        <h3>Plastic Bottles</h3>
+        <p>Based on USD spent. Formula includes recycling bottles once finished.</p>
     
         {{ form_money.hidden_tag() }}
     
@@ -91,7 +94,7 @@
     
         {% endfor %}
     
-        <button type="submit">Submit</button>
+        <input type="submit" value="Submit">
     </form>
 
 </div>

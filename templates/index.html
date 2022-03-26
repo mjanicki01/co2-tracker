@@ -2,65 +2,98 @@
 {% block title %}Homepage{% endblock %}
 {% block content %}
 
-<p>r: {{ r }} </p>
-
-<p> r_format: {{ r_format }}</p>
-
-<p>payload: {{ payload }}</p>
-
-<p>co2_e: {{co2_e}}</p>
-
-<p>CO2e Tracking</p>
-<!-- Flash: welcome back, Blah Blah -->
+<h1>CO2e Tracker</h1>
 
 <div class="user-stat-grid">
-    <div class="user-stat-item">
-        <img src="" height=100/>
-        User's image, name, basic facts
+    <div class="user-stat-item1">
+        <img src="static\images\user.png" height=100/>
+        <div><p>{{user.username}}</p>
+        <p>{{user.first_name}} {{user.last_name}}</p>
+        <p>Mode of Trasnportation:</p>
+        <p><a href="/">Edit Account</a></p>
+        </div>
+
     </div>
-    <div class="user-stat-item">
-        <ul>
-            <li>To Date Total: ##.# kg</li>
-            <li>This Month's Total: ##.# kg</li>
-            <li>Last Month's Total: ##.# kg</li>
-        </ul>
+    <div class="user-stat-item2">
+            <h4 style="color:orangered">All Time Total: {{total_co2e[0]}} kg co2e</h4>
+            <h4 style="color:orangered">This Years's Total: {{total_co2e[2]}} kg co2e</h4>
+            <h4 style="color:orangered">This Month's Total: {{total_co2e[1]}} kg co2e</h4>
     </div>    
 </div>
 
 <div class="activity-stat-grid">
     <div class="activity-stat-item">
-        <h3>Total To Date:</h3>
+        <h3>Total CO2e By Activity</h3>
     </div>
     <div class="activity-stat-item">
-        <img src="" height=100/>
-        (new clothes purchased) ##.#
+        <img src="static\images\t-shirt.png" height=50/>
+        {{total_co2e_clothing[0]}} kg
     </div>
     <div class="activity-stat-item">
-        <img src="" height=100/>
-        (miles flown) ##.#
+        <img src="static\images\plane.png" height=50/>
+        {{total_co2e_flights[0]}} kg
     </div>
     <div class="activity-stat-item">
-        <img src="" height=100/>
-        (miles driven - combustion engine) ##.#
+        <img src="static\images\car.png" height=50/>
+        {{total_co2e_driving[0]}} kg
     </div>
     <div class="activity-stat-item">
-        <img src="" height=100/>
-        (new plastic bottles purchased) ##.#
+        <img src="static\images\water-bottle.png" height=50/>
+        {{total_co2e_bottles}} kg
     </div>
 </div>
 
 <div class="activity-card-grid">
     <div class="activity-card-item">
-        Here's a card (new clothes purchased)
+        <div class="activity-card-header"><h3>New Clothing Purchased</h3></div>
+        <div><h4>All time:</h4>
+        <p>{{total_co2e_clothing[0]}} kg co2e</p><p>${{total_co2e_clothing[1]}}</p>
+        </div>
+        <div>
+        <h4>Current Month: </h4>
+        <p>{{total_co2e_clothing[2]}} kg co2e</p>
+        <p>${{total_co2e_clothing[3]}}</p>
+        </div>
+        <div>
+        <h4>Current Year: </h4>
+        <p>{{total_co2e_clothing[4]}} kg co2e</p>
+        <p>${{total_co2e_clothing[5]}}</p>
+        </div>
     </div>
     <div class="activity-card-item">
-        Here's a card (miles flown)
+        <div class="activity-card-header"><h3>Flights Booked</h3></div>
+        <div><h4>All time:</h4>
+        <p>{{total_co2e_flights[0]}} kg co2e</p>
+        </div>
+        <div>
+        <h4>Current Month: </h4>
+        <p>{{total_co2e_flights[1]}} kg co2e</p>
+        </div>
+        <div>
+        <h4>Current Year: </h4>
+        <p>{{total_co2e_flights[2]}} kg co2e</p>
+        </div>
     </div>
     <div class="activity-card-item">
-        Here's a card (miles driven - combustion engine)
+        <div class="activity-card-header"><h3>Miles Driven</h3></div>
+        <div><h4>All time:</h4>
+        <p>{{total_co2e_driving[0]}} kg co2e</p><p>{{total_co2e_driving[1]}} miles</p>
+        </div>
+        <div>
+        <h4>Current Month: </h4>
+        <p>{{total_co2e_driving[2]}} kg co2e</p>
+        <p>{{total_co2e_driving[3]}} miles</p>
+        </div>
+        <div>
+        <h4>Current Year: </h4>
+        <p>{{total_co2e_driving[4]}} kg co2e</p>
+        <p>{{total_co2e_driving[5]}} miles</p>
+        </div>
     </div>
     <div class="activity-card-item">
-        Here's a card (new plastic bottles purchased)
+        <h3>New Plastic Bottles Purchased</h3>
+        <p>Description of data collection</p>
+        <p>{{total_co2e_bottles}} kg</p>
     </div>
 </div>
 

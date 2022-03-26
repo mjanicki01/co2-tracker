@@ -1,5 +1,4 @@
 from email.policy import default
-import numbers
 from flask_wtf import FlaskForm
 from wtforms import StringField, DecimalField, PasswordField, DateField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import InputRequired, Optional, Email, Length, NumberRange, DataRequired, ValidationError
@@ -15,7 +14,7 @@ def validate_credentials(form, field):
     user = User.query.filter_by(username=username).first()
     if user is None:
         raise ValidationError('Username does not exist')
-    elif User.authenticate == False:
+    elif User.authenticate(username, password) == False:
         raise ValidationError('Password is incorrect')
 
 
@@ -34,16 +33,20 @@ class RegisterForm(FlaskForm):
         validators=[InputRequired(), Length(min=5, max=20)])
     email = StringField('Email',
         validators=[DataRequired(), Email(), Length(max=50)])
-    password = PasswordField('Password',
-        validators=[InputRequired(), Length(min=6, max=55)])
     first_name = StringField('First Name',
         validators=[InputRequired(), Length(max=20)])
     last_name = StringField('Last Name',
         validators=[InputRequired(), Length(max=20)])
+    password = PasswordField('Password',
+        validators=[InputRequired(), Length(min=6, max=55)])
 
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already in use')
 
 
 
@@ -68,38 +71,33 @@ class EditProfileForm(FlaskForm):
         # add avatar next to profile image
 
 
-"""Activity Forms - Add"""
+"""Activity Forms - Add & Edit"""
 
-class AddMoneyEventForm(FlaskForm):
-
-    user_id = IntegerField('user_id', default=1)
-    date = DateField('Date',
-        validators=[DataRequired()])
-    spend_qty = DecimalField('Qty',
-        validators=[InputRequired()])
-
-
-class AddDistanceEventForm(FlaskForm):
+class MoneyEventForm(FlaskForm):
 
     user_id = IntegerField('user_id', default=1)
     date = DateField('Date',
         validators=[DataRequired()])
-    spend_qty = DecimalField('Qty',
+    spend_qty = DecimalField('Total Purchase ($ USD)',
         validators=[InputRequired()])
 
 
-class AddAirTravelEventForm(FlaskForm):
+class DistanceEventForm(FlaskForm):
+
+    user_id = IntegerField('user_id', default=1)
+    date = DateField('Date',
+        validators=[DataRequired()])
+    spend_qty = DecimalField('Miles',
+        validators=[InputRequired()])
+
+
+class AirTravelEventForm(FlaskForm):
 
     user_id = IntegerField('user_id', default=1)
     date = DateField('Date',
         validators=[DataRequired()])
     start_airport = StringField('Take-off Airport')
     land_airport = StringField('Landing Airport')        
-   
-
-class EditActivityForm(FlaskForm):
-
-    pass
 
 
 class AddCommentForm(FlaskForm):

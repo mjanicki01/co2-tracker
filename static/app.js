@@ -6,38 +6,38 @@ function filterTable() {
 }
 
 
-$(window).on("load", function() {
-  $("#form-clth").hide();
-  $("#form-distance").hide();
-  $("#form-airtravel").hide();
-  $("#form-btl").hide();
-})
+// $(window).on("load", function() {
+//   $("#form-clth").hide();
+//   $("#form-drv").hide();
+//   $("#form-air").hide();
+//   $("#form-btl").hide();
+// })
 
 $("#clth").on("click", async function() {
   $("#form-clth").show();
-  $("#form-distance").hide();
-  $("#form-airtravel").hide();
+  $("#form-drv").hide();
+  $("#form-air").hide();
   $("#form-btl").hide();
 })
 
 $("#btl").on("click", async function() {
   $("#form-btl").show();
   $("#form-clth").hide();
-  $("#form-distance").hide();
-  $("#form-airtravel").hide();
+  $("#form-drv").hide();
+  $("#form-air").hide();
 })
 
 $("#air").on("click", async function() {
-  $("#form-airtravel").show();
+  $("#form-air").show();
   $("#form-clth").hide();
-  $("#form-distance").hide();
+  $("#form-drv").hide();
   $("#form-btl").hide();
 })
 
-$("#road").on("click", async function() {
-  $("#form-distance").show();
+$("#drv").on("click", async function() {
+  $("#form-drv").show();
   $("#form-clth").hide();
-  $("#form-airtravel").hide();
+  $("#form-air").hide();
   $("#form-btl").hide();
 })
 

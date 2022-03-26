@@ -1,7 +1,7 @@
-from flask import Flask, render_template, flash, redirect, session, g, jsonify, request
+from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import AddMoneyEventForm, AddAirTravelEventForm, AddDistanceEventForm, RegisterForm, LoginForm
-from models import db, connect_db, User, Activity, UserActivity, Event
+from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm
+from models import db, connect_db, User, UserActivity, Event
 from sqlalchemy.exc import IntegrityError
 from flask_cors import CORS
 import requests
@@ -28,11 +28,11 @@ db.session.commit()
 
 CURR_USER_KEY = "curr_user"
 token = os.environ.get('BEARER')
+base_url = os.environ.get('BASE_URL')
 HEADERS = { "Authorization": "Bearer " + token }
 
 def format_payload(e_id, param1_label, param1_data, param2_label, param2_data):
     """Format payload sent to Climatiq from Add Activity Form"""
-    print(e_id, param1_label, param2_label, param1_data, param2_data)
     return {
       "emission_factor": e_id,
         "parameters":
@@ -40,6 +40,17 @@ def format_payload(e_id, param1_label, param1_data, param2_label, param2_data):
           param1_label: param1_data,
           param2_label: param2_data
           }
+    }
+
+def format_payload_flight(from_data, to_data):
+    """Format payload for flights sent to Climatiq from Add Activity Form"""
+    return {
+      "legs": [
+          {
+          "from": from_data,
+          "to": to_data
+          }
+      ]
     }
 
 @app.before_request
@@ -63,7 +74,19 @@ def homepage():
 
     if g.user:
         events = Event.query.all()
-        return render_template('index.html', events=events)
+        user = User.query.filter_by(id = g.user.id).first()
+        total_co2e = UserActivity.sum_all(g.user.id)
+        total_co2e_flights = UserActivity.sum_all_flights(g.user.id)
+        total_co2e_driving = UserActivity.sum_all_drives(g.user.id)
+        total_co2e_clothing = UserActivity.sum_all_clothing(g.user.id)
+        total_co2e_bottles = UserActivity.sum_all_bottles(g.user.id)
+        return render_template('index.html', events=events,
+                                            user=user,
+                                            total_co2e=total_co2e,
+                                            total_co2e_flights=total_co2e_flights,
+                                            total_co2e_driving=total_co2e_driving,
+                                            total_co2e_clothing=total_co2e_clothing,
+                                            total_co2e_bottles=total_co2e_bottles)
 
     else:
         return render_template('index-anon.html')
@@ -92,6 +115,7 @@ def signup():
 
         db.session.commit()
         session[CURR_USER_KEY] = user.id
+        flash(f"Welcome, {user.username}! Add an activity to start tracking.", "success")
 
         return redirect("/")
 
@@ -132,10 +156,10 @@ def logout():
 
 @app.route('/add-activity', methods=["GET"])
 def form():
-    
-    form_money = AddMoneyEventForm()
-    form_distance = AddDistanceEventForm()
-    form_air_travel = AddAirTravelEventForm()
+    """Main Add Activity Render"""
+    form_money = MoneyEventForm()
+    form_distance = DistanceEventForm()
+    form_air_travel = AirTravelEventForm()
 
     return render_template('activity-add.html',
         form_money=form_money,
@@ -143,10 +167,12 @@ def form():
         form_air_travel=form_air_travel)
 
 
+"""Several Miles of Repeating View Functions"""
+
 @app.route('/post-activity-clothing', methods=["POST"])
 def add_new_event_clothing():
 
-    form = AddMoneyEventForm()
+    form = MoneyEventForm()
 
     if form.validate_on_submit():
         emission_factor_id = "consumer_goods-type_clothing"
@@ -155,12 +181,12 @@ def add_new_event_clothing():
         param2_label = "money_unit"
         param2_data = "usd"
         payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
-        r = requests.post("https://beta3.api.climatiq.io/estimate", data=json.dumps(payload), headers=HEADERS)
+        r = requests.post(base_url + "/estimate", data=json.dumps(payload), headers=HEADERS)
         co2_e = r.json()["co2e"]
 
         newevent = UserActivity(
             user_id = session[CURR_USER_KEY],
-            activity_id = "clothing",
+            activity_id = "Clothing Purchase",
             emission_factor_id = emission_factor_id,
             date = form.date.data,
             IATA_from = None,
@@ -173,44 +199,176 @@ def add_new_event_clothing():
         db.session.add(newevent)
         db.session.commit()
 
-    return render_template("index.html", r=r, co2_e=co2_e, payload=payload)
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
+
+        return render_template('activity-view.html', user=user, events=events)
 
 
+@app.route('/post-activity-bottles', methods=["POST"])
+def add_new_event_bottles():
 
-@app.route('/post-activity', methods=["POST"])
-def add_new_event():
-    
-    newevent = UserActivity(
-    user_id = request.json["user_id"], #doesn't need to be pulled in from the form
-    activity_id = request.json["activity_id"],
-    emission_factor_id = request.json["e_id"],
-    date = request.json["date"],
-    IATA_from = request.json["from"] or None,
-    IATA_to = request.json["to"] or None,
-    spend_qty = request.json["spend_qty"] or None,
-    spend_unit = request.json["spend_unit"] or None,
-    co2e = request.json["co2e"]
-    )
+    form = MoneyEventForm()
 
-    db.session.add(newevent)
-    db.session.commit()
+    if form.validate_on_submit():
+        emission_factor_id = "consumer_goods-type_clothing" #replace
+        param1_label = "money"
+        param1_data = float(form.spend_qty.data)
+        param2_label = "money_unit"
+        param2_data = "usd"
+        payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+        r = requests.post("https://beta3.api.climatiq.io/estimate", data=json.dumps(payload), headers=HEADERS)
+        co2_e = r.json()["co2e"]
 
-    return redirect('/')
+        newevent = UserActivity(
+            user_id = session[CURR_USER_KEY],
+            activity_id = "Plastic Bottle Purchase",
+            emission_factor_id = emission_factor_id,
+            date = form.date.data,
+            IATA_from = None,
+            IATA_to = None,
+            spend_qty = param1_data,
+            spend_unit = param2_data,
+            co2e = co2_e
+        )
+
+        db.session.add(newevent)
+        db.session.commit()
+
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
+
+        return render_template('activity-view.html', user=user, events=events)
+
+
+@app.route('/post-activity-driving', methods=["POST"])
+def add_new_event_driving():
+
+    form = DistanceEventForm()
+
+    if form.validate_on_submit():
+        emission_factor_id = "passenger_vehicle-vehicle_type_motorcycle-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
+        param1_label = "distance"
+        param1_data = float(form.spend_qty.data)
+        param2_label = "distance_unit"
+        param2_data = "mi"
+        payload = format_payload(emission_factor_id, param1_label, param1_data, param2_label, param2_data)
+        r = requests.post(base_url + "/estimate", data=json.dumps(payload), headers=HEADERS)
+        co2_e = r.json()["co2e"]
+
+        newevent = UserActivity(
+            user_id = session[CURR_USER_KEY],
+            activity_id = "Driving",
+            emission_factor_id = emission_factor_id,
+            date = form.date.data,
+            IATA_from = None,
+            IATA_to = None,
+            spend_qty = param1_data,
+            spend_unit = param2_data,
+            co2e = co2_e
+        )
+
+        db.session.add(newevent)
+        db.session.commit()
+
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
+
+        return render_template('activity-view.html', user=user, events=events)
+
+
+@app.route('/post-activity-air-travel', methods=["POST"])
+def add_new_event_airtravel():
+
+    form = AirTravelEventForm()
+
+    if form.validate_on_submit():
+        from_data = form.start_airport.data
+        to_data = form.land_airport.data
+        payload = format_payload_flight(from_data, to_data)
+        r = requests.post(base_url + "/travel/flights", data=json.dumps(payload), headers=HEADERS)
+        co2_e = r.json()["co2e"]
+
+        newevent = UserActivity(
+            user_id = session[CURR_USER_KEY],
+            activity_id = "Flying",
+            emission_factor_id = "NA",
+            date = form.date.data,
+            IATA_from = from_data,
+            IATA_to = to_data,
+            spend_qty = None,
+            spend_unit = "flying", #set nullable=true in models
+            co2e = co2_e
+        )
+
+        db.session.add(newevent)
+        db.session.commit()
+
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
+
+        return render_template('activity-view.html', user=user, events=events)
 
 
 @app.route('/view-history', methods=["GET"])
 def list_user_events():
 
-    user = User.query.get_or_404(session[CURR_USER_KEY])
-    events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
+    if g.user:
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).all()
 
-    return render_template('activity-view.html', user=user, events=events)
+        return render_template('activity-view.html', user=user, events=events)
     
+    else:
+        return render_template('index-anon.html')
 
-@app.route('/edit-activity/<int:user_activity_id>', methods=["POST"])
-def edit_event():
 
-    return render_template('activity-view.html')
+@app.route('/edit-activity/<int:event_id>', methods=["GET", "POST"])
+def edit_event(event_id):
+
+    if not g.user:
+        flash("Access unauthorized. Please login.", "danger")
+        return redirect("/")
+
+    event = UserActivity.query.filter(UserActivity.id == event_id).first()
+    if event.activity_id == "Clothing Purchase":
+        form = MoneyEventForm(obj=event)
+        if form.validate_on_submit():
+            event.date = form.date.data
+            event.spend_qty = form.spend_qty.data
+
+            db.session.commit()
+            return redirect('/view-history')
+
+    elif event.activity_id == "Driving":
+        form = DistanceEventForm(obj=event)
+        if form.validate_on_submit():
+            event.date = form.date.data
+            event.spend_qty = form.spend_qty.data
+
+            db.session.commit()
+            return redirect('/view-history')
+
+    elif event.activity_id == "Bottle Purchase":
+        form = MoneyEventForm(obj=event)
+        if form.validate_on_submit():
+            event.date = form.date.data
+            event.spend_qty = form.spend_qty.data
+
+            db.session.commit()
+            return redirect('/view-history')
+
+    elif event.activity_id == "Flying":
+        form = AirTravelEventForm(obj=event)
+        if form.validate_on_submit():
+            event.date = form.date.data
+            event.IATA_from = form.start_airport.data
+            event.IATA_to = form.land_airport.data
+
+            db.session.commit()
+            return redirect('/view-history')
+
+    return render_template('activity-edit.html', form=form, event=event)
 
 
 @app.route('/delete-activity/<int:user_activity_id>', methods=["POST"])

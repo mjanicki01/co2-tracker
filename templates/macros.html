@@ -5,9 +5,11 @@
   <td>
     {% if row.spend_unit == "mi" %}{{row.spend_qty|round}} mi
     {% elif row.spend_unit == "usd" %}{{"$%.2f"|format(row.spend_qty)}}
+    {% elif row.spend_unit == "flying" %}From {{row.IATA_from}} to {{row.IATA_to}}
     {% else %}{{row.spend_qty}}
     {% endif %}
   </td>
+  <td>{{row.co2e|round}} kg</td>
   <td>{{row.date}}</td>
   <td>
     <form method="POST" action="/edit-activity/{{ row.id }}">
