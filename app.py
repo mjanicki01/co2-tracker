@@ -15,11 +15,6 @@ debug = DebugToolbarExtension(app)
 CORS(app)
 connect_db(app)
 
-db.create_all()
-db.session.commit()
-
-
-
 
 
 ##################################################################################################
