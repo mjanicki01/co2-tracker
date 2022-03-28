@@ -1,8 +1,14 @@
-{% extends 'base-anon.html' %}
+{% extends 'base-anon-main.html' %}
 {% block title %}Homepage{% endblock %}
 {% block content %}
 
-<a href="/signup">Click here to register</a>
-<a href="/login">Click here to login</a>
-
+<div class="anon-container">
+    <div>
+    <h1>CO2 Emission Tracker</h1>
+</div>
+<div style="padding:20px">
+    <p style="color:white">Keep track of your carbon footprint by recording your everyday activities that generate carbon dioxide emissions.</p>
+    <p style="color:white">This app tracks emission factors for cradle-to-shelf clothing purchases, water bottle purchases, driving, and flights provided by <a href="/https://climatiq.io/">Climatiq</a>. </p>
+    <p><a href="/signup"><button class="blue">Register</button></a><a href="/login"><button class="blue">Login</button></a></p>
+</div>
 {% endblock %}

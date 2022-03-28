@@ -2,6 +2,26 @@
     padding: 20px 20px 40px 20px;
 }
 
+.content-anon {
+    background: url("/static/images/shutterstock_155031206 (1).jpg") no-repeat  center/cover;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+}
+
+.anon-container {
+    width: 90%;
+    height: 90%;
+    max-width: 700px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 a:visited {
     color: rgb(47, 59, 47);
 }

@@ -4,6 +4,26 @@
     max-width: 1000px;
 }
 
+.content-anon {
+    background: url("/static/images/shutterstock_155031206.jpg") no-repeat  center/cover;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+}
+
+.anon-container {
+    width: 90%;
+    height: 90%;
+    max-width: 700px;
+    margin: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: nowrap;
+}
+
 a:visited {
     color: rgb(47, 59, 47);
 }
@@ -134,7 +154,7 @@ input[type=submit] {
     background-color: teal;
 }
 
-input[type=submit]:hover, input[type=submit]:active {
+input[type=submit]:hover, input[type=submit]:active, .blue {
     padding: 10px;
     font-weight: 600;
     border: 1px solid teal;

@@ -10,7 +10,6 @@ import os
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
-# app.config.from_object('config.DevConfig')
 debug = DebugToolbarExtension(app)
 CORS(app)
 connect_db(app)
