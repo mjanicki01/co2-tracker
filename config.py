@@ -20,6 +20,6 @@ DEBUG = False
 
 # Database
 # SQLALCHEMY_DATABASE_URI = "postgresql://oalakyzygocekd:094c598c123f898c5f4f4c312d1bcff1d61faaf956fd115b79a449f6e82dad35@ec2-54-160-109-68.compute-1.amazonaws.com:5432/d42efu0qie1guq"
-SQLALCHEMY_DATABASE_URI = "postgresql://hgifrxexffyssu:b9dd8d70cd8274992d6a03f1e7e8d65cc291526f4ebad3fecf794e4dac8972ce@ec2-34-197-84-74.compute-1.amazonaws.com:5432/d1regc6ohtn56m"
+SQLALCHEMY_DATABASE_URI = "postgresql-fitted-72536"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True

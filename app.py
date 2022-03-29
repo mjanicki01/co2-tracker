@@ -1,3 +1,4 @@
+from multiprocessing import dummy
 from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for, request
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm, EditProfileForm
@@ -84,7 +85,8 @@ def homepage():
                                 total_co2e_bottles=total_co2e_bottles)
 
     else:
-        return render_template('index-anon.html')
+        form = LoginForm()
+        return render_template('index-anon.html', form=form)
 
 
 @app.route('/about')
@@ -96,9 +98,9 @@ def about_page():
         return render_template('about-anon.html')
 
     
-##################################################################################################
+#####################################################
 """ User Sign-up, Sign-in, Profile Edit, & Logout"""
-
+#####################################################
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -183,8 +185,11 @@ def edit_user_profile():
     return render_template('user-edit.html', form=form)
 
 
-##################################################################################################
+
+#####################################################
 """Add, Edit, View, & Delete User Activities"""
+#####################################################
+
 
 @app.route('/add-activity', methods=["GET"])
 def form():
@@ -205,12 +210,23 @@ def list_user_events():
     if g.user:
         user = User.query.get_or_404(session[CURR_USER_KEY])
         page = request.args.get('page', 1, type=int)
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).paginate(page=page, per_page=ROWS_PER_PAGE)
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).order_by(UserActivity.date.desc()).paginate(page=page, per_page=ROWS_PER_PAGE)
 
         return render_template('activity-view.html', user=user, events=events)
     
     else:
         return render_template('index-anon.html')
+
+
+@app.route('/delete-activity/<int:user_activity_id>', methods=["POST"])
+def delete_event(user_activity_id):
+
+    event = UserActivity.query.get_or_404(user_activity_id)
+
+    db.session.delete(event)
+    db.session.commit()
+
+    return redirect('/view-history')
 
 
 """Each Add & Edit view function: Post Activity to Ext API; Parse Response; Post to DB"""
@@ -245,10 +261,7 @@ def add_new_event_clothing():
         db.session.add(newevent)
         db.session.commit()
 
-        user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
-
-        return render_template('activity-view.html', user=user, events=events)
+        return redirect('/view-history')
 
 
 @app.route('/post-activity-bottles', methods=["POST"])
@@ -281,10 +294,7 @@ def add_new_event_bottles():
         db.session.add(newevent)
         db.session.commit()
 
-        user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
-
-        return render_template('activity-view.html', user=user, events=events)
+        return redirect('/view-history')
 
 
 @app.route('/post-activity-driving', methods=["POST"])
@@ -317,10 +327,7 @@ def add_new_event_driving():
         db.session.add(newevent)
         db.session.commit()
 
-        user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
-
-        return render_template('activity-view.html', user=user, events=events)
+        return redirect('/view-history')
 
 
 @app.route('/post-activity-air-travel', methods=["POST"])
@@ -329,31 +336,33 @@ def add_new_event_airtravel():
     form = AirTravelEventForm()
 
     if form.validate_on_submit():
-        from_data = form.start_airport.data
-        to_data = form.land_airport.data
-        payload = format_payload_flight(from_data, to_data)
-        r = requests.post(base_url + "/travel/flights", data=json.dumps(payload), headers=HEADERS)
-        co2_e = r.json()["co2e"]
+        try:
+            from_data = form.start_airport.data.upper()
+            to_data = form.land_airport.data.upper()
+            payload = format_payload_flight(from_data, to_data)
+            r = requests.post(base_url + "/travel/flights", data=json.dumps(payload), headers=HEADERS)
+            co2_e = r.json()["co2e"]
 
-        newevent = UserActivity(
-            user_id = session[CURR_USER_KEY],
-            activity_id = "Flying",
-            emission_factor_id = "NA",
-            date = form.date.data,
-            IATA_from = from_data,
-            IATA_to = to_data,
-            spend_qty = None,
-            spend_unit = "flying",
-            co2e = co2_e
-        )
+            newevent = UserActivity(
+                user_id = session[CURR_USER_KEY],
+                activity_id = "Flying",
+                emission_factor_id = "NA",
+                date = form.date.data,
+                IATA_from = from_data,
+                IATA_to = to_data,
+                spend_qty = None,
+                spend_unit = "flying",
+                co2e = co2_e
+            )
 
-        db.session.add(newevent)
-        db.session.commit()
+            db.session.add(newevent)
+            db.session.commit()
+        
+        except:
+            flash("That IATA code does not exist! Try again.", "error")
+            return redirect('/add-activity')
 
-        user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
-
-        return render_template('activity-view.html', user=user, events=events)
+        return redirect('/view-history')
 
 
 @app.route('/edit-activity/<int:event_id>', methods=["GET", "POST"])
@@ -421,26 +430,28 @@ def edit_event(event_id):
             db.session.commit()
             return redirect('/view-history')
 
+
     elif event.activity_id == "Flying":
         form = AirTravelEventForm(obj=event)
         if form.validate_on_submit():
-            event.date = form.date.data
-            event.IATA_from = form.start_airport.data
-            event.IATA_to = form.land_airport.data
+            try:
+                from_data = form.start_airport.data.upper()
+                to_data = form.land_airport.data.upper()
+                payload = format_payload_flight(from_data, to_data)
+                r = requests.post(base_url + "/travel/flights", data=json.dumps(payload), headers=HEADERS)
+                co2_e = r.json()["co2e"]
 
-            db.session.commit()
-            return redirect('/view-history')
+                event.date = form.date.data
+                event.IATA_from = from_data
+                event.IATA_to = to_data
+                event.co2e = co2_e
+
+                db.session.commit()
+                return redirect('/view-history')
+            
+            except:
+                flash("That IATA code does not exist! Try again.", "error")
+                return render_template('activity-edit.html', form=form, event=event)  
 
     return render_template('activity-edit.html', form=form, event=event)
-
-
-@app.route('/delete-activity/<int:user_activity_id>', methods=["POST"])
-def delete_event(user_activity_id):
-
-    event = UserActivity.query.get_or_404(user_activity_id)
-
-    db.session.delete(event)
-    db.session.commit()
-
-    return redirect('/view-history')
 

@@ -69,6 +69,25 @@ body {
     margin: 0;
 }
 
+footer {
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-anon {
+    background-color: black;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-anon a {
+    color: white;
+}
+
+
 a {
     font-style: bold;
     color:rgb(41, 34, 34)
