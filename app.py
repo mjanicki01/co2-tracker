@@ -24,7 +24,7 @@ CURR_USER_KEY = "curr_user"
 token = os.environ.get('BEARER')
 base_url = os.environ.get('BASE_URL')
 HEADERS = { "Authorization": "Bearer " + token }
-ROWS_PER_PAGE = 20
+ROWS_PER_PAGE = 10
 
 
 def format_payload(e_id, param1_label, param1_data, param2_label, param2_data):
@@ -204,13 +204,10 @@ def list_user_events():
 
     if g.user:
         user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).all()
-
         page = request.args.get('page', 1, type=int)
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).paginate(page=page, per_page=ROWS_PER_PAGE)
 
-        events2 = events.query.paginate(page=page, per_page=ROWS_PER_PAGE)
-
-        return render_template('activity-view.html', user=user, events=events, events2=events2)
+        return render_template('activity-view.html', user=user, events=events)
     
     else:
         return render_template('index-anon.html')

@@ -1,5 +1,5 @@
 {% macro data_rows(data) %}
-{% for row in data %}
+{% for row in data.items %}
 <tr class="">
   <td class="{{row.activity_id}}">{{row.activity_id}}</td> 
   <td>

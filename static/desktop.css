@@ -96,6 +96,17 @@ table {
     text-align: center;
 }
 
+.table-container {
+    display: flex;
+    justify-content: center;
+}
+
+.history-nav {
+    display:flex;
+    justify-content:end;
+    margin-top:2em;
+}
+
 p, ul {
     line-height: 24px;
 }
@@ -172,6 +183,18 @@ input[type=submit]:hover, input[type=submit]:active, .blue {
     cursor: pointer;
     background-color: teal;
     box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px;
+}
+
+.blue:disabled {
+    padding: 10px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    width: 80px;
+    cursor: pointer;
+    background-color: rgba(39, 114, 114, 0.705);
+    box-shadow: none;
 }
 
 
@@ -265,6 +288,7 @@ button:hover {
     visibility:inherit;
     max-width: 650px;
     width: 100%;
+    text-indent: 2rem;
 }
 
 .about-content {
