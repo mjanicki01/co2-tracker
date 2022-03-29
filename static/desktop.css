@@ -70,6 +70,10 @@ body {
     margin: 0;
 }
 
+a {
+    font-style: bold;
+    color:rgb(41, 34, 34)
+}
 
 h1, h4 {
     font-family: 'Montserrat', sans-serif;
@@ -90,6 +94,10 @@ img {
 
 table {
     text-align: center;
+}
+
+p, ul {
+    line-height: 24px;
 }
 
 thead tr:first-child td {
@@ -244,6 +252,25 @@ button:hover {
     margin: 3rem;
     display: grid;
     grid-template-columns: auto auto auto auto;
+}
+
+.secondary-nav-about {
+    margin: 3rem;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.nav-about {
+    display:none;
+    visibility:inherit;
+    max-width: 650px;
+    width: 100%;
+}
+
+.about-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .secondary-nav-cell {

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}About{% endblock %}
+{% block content %}
+
+<h1>About CO2e Tracker</h1>
+<div class="secondary-nav-about">
+    <div class="secondary-nav-cell">
+        <button type="button" class="secondary-nav-btn" id="impact-btn">Impact</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" class="secondary-nav-btn" id="numbers-btn">Numbers</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" class="secondary-nav-btn" id="goals-btn">Stretch Goals</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" class="secondary-nav-btn" id="tools-btn">Tools & Tech</button>
+    </div>
+    <div class="secondary-nav-cell">
+        <button type="button" class="secondary-nav-btn" id="credit-btn">Credit</button>
+    </div>
+</div>
+
+<div class="about-content">
+    <div class="nav-about"  id="impact">
+        <h2>Impact</h2>
+        <p>Without argument, policymakers, corporations, and government bodies have the greatest influence over climate impact. It can be easy to feel disillusioned by what is out of an individual’s control. However, it is possible to make a difference on a collective scale by changing habits and increasing awareness. This app mimics the concept of a health or fitness app. Far from perfect, the idea is to record and track activities, see a human-comprehensible impact from those habits, and gamify ways of shifting towards progress.</p>
+    </div>
+    <div class="nav-about" id="numbers">
+        <h2>Numbers</h2>
+        <p>Ok, if I was a Stats student, I would poke holes into this app like swiss cheese. There is a mind-boggling number of variables when it comes to calculating CO2e.</p>
+        <p>When it comes to activities measured by money spent, the Life Cycle Analysis (LCA) is used. LCA is a method that evaluates the environmental impact of a product through its life cycle from the extraction of raw materials through processing, manufacturing, distribution, use, recycling, and final disposal. The <a href="https://explorer.climatiq.io/?search=consumer_goods-type_clothing&region=US">clothing purchase</a> and <a href="https://explorer.climatiq.io/?search=consumer_goods-type_soft_drinks_bottled_water_ice&region=US">plastic bottle purchase</a> emission factors cover a chunk of the LCA called “cradle to shelf”, or the life cycle of the product until it reaches the consumer. <a href="https://explorer.climatiq.io/?search=passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na&region=US">Driving</a> factors in emissions from an average passenger car/minivan/SUV/small pickup truck (vehicles with wheelbase less than 121 inches), retrieved from the EPA's GHG Emission Factors Hub. <a href="https://docs.climatiq.io/#travel-flights">Flight</a> routes are never a straight line and the rate of consumption is non-linear. This is why the parameters are based on take-off and landing airport and not by mileage.</p>
+        <p>At this time, the goal of the app is to present a concept rather than to provide exact data parameters.</p>
+    </div>
+    <div class="nav-about" id="goals">
+        <h2>Stretch Goals</h2>
+        <p><ul>
+            <li>Gamification: sharing stats, scoreboard, messaging feature</li>
+            <li>Get nitty gritty about data, offering more diverse parameter inputs to users</li>
+            <li>Developing a B2B version to monitor CO2e for a construction company, hotel, or data center</li>
+            <li>Present alternatives, displaying instead how much CO2e has been avoided by using those alternatives</li>
+        </ul></p>
+    </div>
+    <div class="nav-about" id="tools">
+        <h2>Tools & Tech</h2>
+        <p><ul>
+            <li>Python</li>
+            <li>Flask, SQLAlchemy</li>
+            <li>PostgreSQL</li>
+            <li>jQuery</li>
+            <li>Vanilla JS & CSS</li>
+        </ul></p>
+    </div>
+    <div class="nav-about" id="credit">
+        <h2>Credit</h2>
+        <p>
+            <ul>
+                <li>Awesome mentors, Allan Sanders & Sunny Kolattukudy</li>
+                <li>The <a href="https://www.springboard.com/">Springboard</a> community</li>
+                <li>Icons:
+                    <a href="https://www.flaticon.com/free-icons/water" title="water icons">Water icons created by Pixel perfect - Flaticon</a>
+    <a href="https://www.flaticon.com/free-icons/tshirt" title="tshirt icons">Tshirt icons created by juicy_fish - Flaticon</a>
+    <a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Kiranshastry - Flaticon</a>
+    <a href="https://www.flaticon.com/free-icons/plane" title="plane icons">Plane icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a>
+                </li>
+            </ul>
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}

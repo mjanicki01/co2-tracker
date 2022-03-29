@@ -3,7 +3,7 @@
 {% block content %}
 {% from 'macros.html' import data_rows %}
 
-{%if events %}
+{%if events2.items %}
     <table>
         <thead>
             <td>Type</td>
@@ -14,7 +14,7 @@
             <td></td>
         </thead>
         <tbody>
-            {{ data_rows(events) }}
+            {{ data_rows(events2.items) }}
         </tbody>
     </table>
 

@@ -1,1 +1,12 @@
-Here's a 404 page
+{% extends 'base-anon-main.html' %}
+{% block title %}404 Page{% endblock %}
+{% block content %}
+
+<div class="anon-container">
+    <div>
+    <h1>404</h1>
+</div>
+<div style="padding:20px">
+    <p style="color:white">This page does not exist.</p>
+</div>
+{% endblock %}

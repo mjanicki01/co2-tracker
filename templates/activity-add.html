@@ -22,7 +22,7 @@
 
 <form method="POST" class="activity-form" id="form-clth" action="/post-activity-clothing">
     <h3>New Clothing Purchased</h3>
-    <p>Based on USD Spent. Formula includes manufacturing and shipment, from the factory to your closet.</p>
+    <p>Based on USD Spent. Emission factor covers cradle-to-shelf lifecycle.</p>
 
     {{ form_money.hidden_tag() }}
 
@@ -80,7 +80,7 @@
 <div class="form-container">
     <form method="POST" class="activity-form" id="form-btl" action="/post-activity-bottles">
         <h3>Plastic Bottles</h3>
-        <p>Based on USD spent. Formula includes recycling bottles once finished.</p>
+        <p>Based on USD spent. Emission factor covers cradle-to-shelf lifecycle.</p>
     
         {{ form_money.hidden_tag() }}
     

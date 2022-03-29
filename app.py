@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for
+from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for, request
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm, EditProfileForm
 from models import db, connect_db, User, UserActivity
@@ -24,6 +24,8 @@ CURR_USER_KEY = "curr_user"
 token = os.environ.get('BEARER')
 base_url = os.environ.get('BASE_URL')
 HEADERS = { "Authorization": "Bearer " + token }
+ROWS_PER_PAGE = 20
+
 
 def format_payload(e_id, param1_label, param1_data, param2_label, param2_data):
     """Format payload sent to Climatiq from Add Activity Form"""
@@ -85,6 +87,15 @@ def homepage():
         return render_template('index-anon.html')
 
 
+@app.route('/about')
+def about_page():
+    if g.user:
+        return render_template('about.html')
+    
+    else:
+        return render_template('about-anon.html')
+
+    
 ##################################################################################################
 """ User Sign-up, Sign-in, Profile Edit, & Logout"""
 
@@ -139,8 +150,7 @@ def logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
-        flash(f"Goodbye!", "success")
-
+        
         return redirect("/")
 
 
@@ -189,7 +199,24 @@ def form():
         form_air_travel=form_air_travel)
 
 
-"""Several Miles of Repeating View Functions"""
+@app.route('/view-history', methods=["GET"])
+def list_user_events():
+
+    if g.user:
+        user = User.query.get_or_404(session[CURR_USER_KEY])
+        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).all()
+
+        page = request.args.get('page', 1, type=int)
+
+        events2 = events.query.paginate(page=page, per_page=ROWS_PER_PAGE)
+
+        return render_template('activity-view.html', user=user, events=events, events2=events2)
+    
+    else:
+        return render_template('index-anon.html')
+
+
+"""Each Add & Edit view function: Post Activity to Ext API; Parse Response; Post to DB"""
 
 @app.route('/post-activity-clothing', methods=["POST"])
 def add_new_event_clothing():
@@ -269,7 +296,7 @@ def add_new_event_driving():
     form = DistanceEventForm()
 
     if form.validate_on_submit():
-        emission_factor_id = "passenger_vehicle-vehicle_type_motorcycle-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
+        emission_factor_id = "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
         param1_label = "distance"
         param1_data = float(form.spend_qty.data)
         param2_label = "distance_unit"
@@ -319,7 +346,7 @@ def add_new_event_airtravel():
             IATA_from = from_data,
             IATA_to = to_data,
             spend_qty = None,
-            spend_unit = "flying", #set nullable=true in models
+            spend_unit = "flying",
             co2e = co2_e
         )
 
@@ -330,19 +357,6 @@ def add_new_event_airtravel():
         events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY])
 
         return render_template('activity-view.html', user=user, events=events)
-
-
-@app.route('/view-history', methods=["GET"])
-def list_user_events():
-
-    if g.user:
-        user = User.query.get_or_404(session[CURR_USER_KEY])
-        events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).all()
-
-        return render_template('activity-view.html', user=user, events=events)
-    
-    else:
-        return render_template('index-anon.html')
 
 
 @app.route('/edit-activity/<int:event_id>', methods=["GET", "POST"])
@@ -375,7 +389,7 @@ def edit_event(event_id):
     elif event.activity_id == "Driving":
         form = DistanceEventForm(obj=event)
         if form.validate_on_submit():
-            emission_factor_id = "passenger_vehicle-vehicle_type_motorcycle-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
+            emission_factor_id = "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na"
             param1_label = "distance"
             param1_data = float(form.spend_qty.data)
             param2_label = "distance_unit"
