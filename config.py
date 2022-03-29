@@ -19,6 +19,6 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 DEBUG = False
 
 # Database
-SQLALCHEMY_DATABASE_URI = "postgresql://hgifrxexffyssu:b9dd8d70cd8274992d6a03f1e7e8d65cc291526f4ebad3fecf794e4dac8972ce@ec2-34-197-84-74.compute-1.amazonaws.com:5432/d1regc6ohtn56m"
+SQLALCHEMY_DATABASE_URI = "postgresql:///co2budget"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True

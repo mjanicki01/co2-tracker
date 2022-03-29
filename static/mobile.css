@@ -99,7 +99,7 @@ h1, h4 {
 h2, h3, h5 {
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    color: orangered;
+    color: sienna;
 }
 
 img {
@@ -124,7 +124,7 @@ thead tr:first-child td {
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    color: orangered;
+    color: sienna;
 }
 
 input {
@@ -323,9 +323,9 @@ button:hover {
     margin: 5px;
     font-weight: 600;
     font-size: 15px;
-    border: 1px solid orangered;
+    border: 1px solid sienna;
     border-radius: 4px;
-    color: orangered;
+    color: sienna;
     min-width: 160px;
     cursor: pointer;
     background-color: white;
@@ -335,9 +335,9 @@ button:hover {
     padding: 10px;
     font-weight: 600;
     font-size: 15px;
-    border: 1px solid orangered;
+    border: 1px solid sienna;
     border-radius: 4px;
-    color: orangered;
+    color: sienna;
     min-width: 160px;
     cursor: pointer;
     background-color: white;
