@@ -1,6 +1,7 @@
 """Flask configuration."""
 
 from os import environ, path
+import os
 from dotenv import load_dotenv
 
 
@@ -9,7 +10,7 @@ load_dotenv(path.join(basedir, '.env'))
 
 
 """Base config."""
-SECRET_KEY = environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 STATIC_FOLDER = 'static'
 TEMPLATES_FOLDER = 'templates'
 
@@ -19,6 +20,6 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 DEBUG = False
 
 # Database
-SQLALCHEMY_DATABASE_URI = environ.get('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
