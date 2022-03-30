@@ -1,9 +1,7 @@
-from multiprocessing import dummy
-from flask import Flask, render_template, flash, redirect, session, g, jsonify,url_for, request
+from flask import Flask, render_template, flash, redirect, session, g, request
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import MoneyEventForm, AirTravelEventForm, DistanceEventForm, RegisterForm, LoginForm, EditProfileForm
 from models import db, connect_db, User, UserActivity
-from sqlalchemy.exc import IntegrityError
 from flask_cors import CORS
 import requests
 import json
@@ -15,6 +13,8 @@ debug = DebugToolbarExtension(app)
 CORS(app)
 connect_db(app)
 
+db.drop_all()
+db.create_all()
 
 
 ##################################################################################################
