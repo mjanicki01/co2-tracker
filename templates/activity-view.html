@@ -3,36 +3,34 @@
 {% block content %}
 {% from 'macros.html' import data_rows %}
 
-{%if events %}
-<div class="table-container">
-    <table>
-        <thead>
-            <td>Type</td>
-            <td>Expenditure</td>
-            <td>CO2 Emission</td>
-            <td>Date</td>
-            <td></td>
-            <td></td>
-        </thead>
-        <tbody>
-            {{ data_rows(events) }}
-        </tbody>
-    </table>
-</div>
-        <div class="history-nav">
-            {% if events.has_prev %}
-              <a href="{{ url_for('list_user_events', page=events.prev_num) }}"><button class="blue">Previous</button></a>
-            {% else %}
-              <a><button class="blue" disabled>Previous</button></a>
-            {% endif %}
+{%if events_exist %}
+  <div class="table-container">
+      <table>
+          <thead>
+              <td>Type</td>
+              <td>Expenditure</td>
+              <td>CO2 Emission</td>
+              <td>Date</td>
+              <td></td>
+              <td></td>
+          </thead>
+          <tbody>
+              {{ data_rows(events) }}
+          </tbody>
+      </table>
+    </div>
+    <div class="history-nav">
+      {% if events.has_prev %}
+        <a href="{{ url_for('list_user_events', page=events.prev_num) }}"><button class="blue">Previous</button></a>
+
+      {% endif %}
 
 
-            {% if events.has_next %}
-              <a href="{{ url_for('list_user_events', page=events.next_num) }}"><button class="blue">Next</button></a>
-            {% else %}
-              <a><button class="blue" disabled>Next</button></a>
-            {% endif %}
-        </div>
+      {% if events.has_next %}
+        <a href="{{ url_for('list_user_events', page=events.next_num) }}"><button class="blue">Next</button></a>
+
+      {% endif %}
+    </div>
 
 
     {% else %}

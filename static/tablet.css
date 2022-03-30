@@ -185,7 +185,7 @@ input[type=submit] {
     background-color: teal;
 }
 
-input[type=submit]:hover, input[type=submit]:active, .blue {
+input[type=submit]:hover, input[type=submit]:active {
     padding: 10px;
     font-weight: 600;
     border: 1px solid teal;
@@ -197,16 +197,27 @@ input[type=submit]:hover, input[type=submit]:active, .blue {
     box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px;
 }
 
-.blue:disabled {
+button.blue {
     padding: 10px;
     font-weight: 600;
-    border: none;
+    border: 1px solid teal;
     border-radius: 4px;
     color: white;
     width: 80px;
     cursor: pointer;
-    background-color: rgba(39, 114, 114, 0.705);
-    box-shadow: none;
+    background-color: teal;
+}
+
+button.blue:hover {
+    padding: 10px;
+    font-weight: 600;
+    border: 1px solid teal;
+    border-radius: 4px;
+    color: white;
+    width: 80px;
+    cursor: pointer;
+    background-color: teal;
+    box-shadow: rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px;
 }
 
 button {

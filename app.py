@@ -209,9 +209,10 @@ def list_user_events():
     if g.user:
         user = User.query.get_or_404(session[CURR_USER_KEY])
         page = request.args.get('page', 1, type=int)
+        events_exist = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).all()
         events = UserActivity.query.filter(UserActivity.user_id == session[CURR_USER_KEY]).order_by(UserActivity.date.desc()).paginate(page=page, per_page=ROWS_PER_PAGE)
 
-        return render_template('activity-view.html', user=user, events=events)
+        return render_template('activity-view.html', user=user, events=events, events_exist=events_exist)
     
     else:
         return render_template('index-anon.html')
