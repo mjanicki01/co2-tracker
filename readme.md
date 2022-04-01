@@ -22,20 +22,20 @@ After registration, a user may add an activity via a form designated to one of t
 
 ## Run Locally
 
-`python3 -m venv venv`
-`source venv/bin/activate`
-`pip install -r requirements.txt`
-`touch ".env"`
-
+`python3 -m venv venv`  
+`source venv/bin/activate`  
+`pip install -r requirements.txt`  
+`touch ".env"`  
+  
 Add the following variables into your .env file:
-`SECRET_KEY`
-`BEARER`  Retrieve from [Climatiq.io](https://www.climatiq.io/)
-`BASE_URL = "https://beta3.api.climatiq.io"`
-
-`createdb co2tracker_db`
-`sudo service postgresql start`
-`python3 app.py`
-`flask run`
+`SECRET_KEY`  
+`BEARER`  Retrieve from [Climatiq.io](https://www.climatiq.io/)  
+`BASE_URL = "https://beta3.api.climatiq.io"`  
+  
+`createdb co2tracker_db`  
+`sudo service postgresql start`  
+`python3 app.py`  
+`flask run`  
 
 
 
