@@ -199,15 +199,3 @@ class UserActivity(db.Model):
                 round(sum_money_curr_month, 2),
                 round(sum_co2e_curr_year),
                 round(sum_money_curr_year, 2)]
-
-
-
-
-
-
-# todo: add comments object:
-#    comment PK
-#    comment string
-#    comment FK relationship -> event PK
-
-
