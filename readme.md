@@ -1,9 +1,11 @@
 # CO2e Tracker
 
 ## Demo
-<div style="position: relative; padding-bottom: 59.4059405940594%; height: 0;"><iframe src="./static/images/demo.mp4" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+https://github.com/mjanicki01/co2-tracker/assets/51221537/73f20adb-51e5-4e18-bea4-2c926e709d39
 
 ## About
+
 As Capstone 1 of Springboard's Software Engineering Career Track, CO2e Tracker is an database-driven app that allows users to record their activities along with corresponding CO2 emissions.
 Using Climatiq's API to calculate CO2e, four types of activities are available to be recorded: Flights, driving, and purchasing of new clothing or plastic bottles. The emission factor for purchasing includes the cradle-to-shelf product lifecycle. [View Emission Descriptions](./proposal/emission_desc.png)
 
